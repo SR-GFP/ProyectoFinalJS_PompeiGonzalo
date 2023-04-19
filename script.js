@@ -1,10 +1,11 @@
 /*Variables de informacion*/
 let stock = [];
-let productos = [];
+let carrito = [];
 
 /*Variables para Nodos */
 let contenedorProductos;
 let plantillaProductos;
+let cardProducto;
 let imagenProducto;
 let nombreProducto;
 let precioProducto;
@@ -23,7 +24,8 @@ function vincularElementos() {
 
 /*Inicializador de eventos*/
 function inicializarEventos(){
-    document.addEventListener("DOMContentLoaded", ()=> cargarProductosApi())
+    document.addEventListener("DOMContentLoaded", ()=> cargarProductosApi());
+    contenedorProductos.addEventListener("click", evento =>{agregarProducto(evento)});
 }
 
 /*Obtener los datos de los productos desde API*/
@@ -42,21 +44,38 @@ function pintarProductos(array) {
 
         array.forEach((producto) => {
             const copiaPlantilla = plantillaProductos.cloneNode(true);
-            const { imagen, id, nombre, precio, descripcion } = producto;
+            const { imagen, id, nombre, precio, descripcion } = producto; //desestructuracion//
             copiaPlantilla.querySelector("#imagenProducto").setAttribute("src", imagen);
             copiaPlantilla.querySelector("#ID").textContent = id;
             copiaPlantilla.querySelector("#nombreProducto").textContent = nombre;
             copiaPlantilla.querySelector("#precioProducto").textContent = precio;
             copiaPlantilla.querySelector("#descripcionProducto").textContent = descripcion;
+            copiaPlantilla.querySelector(".botonComprar").setAttribute("data-id",id);
             
             fragment.appendChild(copiaPlantilla);            
         });
         contenedorProductos.appendChild(fragment);
 }
 
+const agregarProducto = evento =>{
+    if(evento.target.classList.contains("botonComprar")){
+        const idProducto = evento.target.getAttribute("data-id");
+        const producto = stock.find((prod) => prod.id === idProducto);
+        const productoCarrito = {
+            id: producto.id,
+            nombre: producto.nombre,
+            precio: producto.precio,
+            imagen: producto.imagen
+        };
+        carrito.push(productoCarrito);
+        console.log(carrito);
+    }
+}
+
 function main() {
-    vincularElementos()        
+    vincularElementos()   
     cargarProductosApi()
+    inicializarEventos()
 }
 
 main()
