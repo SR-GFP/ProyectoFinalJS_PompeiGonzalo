@@ -73,9 +73,8 @@ const agregarProducto = evento =>{
 }
 
 function main() {
-    vincularElementos()   
-    cargarProductosApi()
-    inicializarEventos()
+    vincularElementos();
+    inicializarEventos();
 }
 
 main()
