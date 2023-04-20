@@ -59,17 +59,37 @@
         </nav>
     </header>
     <main>
-        <div class="container contenedor_carrito text-center sticky-top">
+        <div class="container-fluid contenedor_carrito text-center sticky-top">
             <div class="row">
                 <div class="col-10">
                     <h1>Shop</h1>
                 </div>
-                <div class="col-2 contenedor_carrito">
-                    <a href="carrito.html">
+                <div class="col-2">
+                    <button type="button" class="btn btn-outline-light p-1 m-1" data-bs-toggle="modal" data-bs-target="#carritoDeComprasModal">
                         <i class="bi bi-cart icono_carrito"></i>
                         <span class="badge bg-primary rounded-circle" id="contadorCarrito">0</span>
-                    </a>
+                    </button>
                 </div>
+
+                <!-- Modal para mostrar el contenido del Carrito -->
+                <div class="modal fade" id="carritoDeComprasModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <h4>Buenas probando</h4>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -90,8 +110,9 @@
                     <h5 class="card-title">Nombre de Producto: <span id="nombreProducto"></span></h5>
                     <h6 class="list-group-item mb-2">Precio $<span id="precioProducto"></span></h6>
                     <h6 class="list-group-item text-muted">ID Number: <span id="ID"></span></h6>
-                    <p class="card-text" id="descripcionProducto">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary botonComprar">Comprar</a>
+                    <p class="card-text" id="descripcionProducto">Some quick example text to build on the card title and
+                        make up the bulk of the card's content.</p>
+                    <a href="" class="btn btn-primary botonComprar">Comprar</a>
                 </div>
             </div>
         </div>

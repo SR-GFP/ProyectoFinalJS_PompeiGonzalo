@@ -29,6 +29,7 @@ function vincularElementos() {
 /*Inicializador de eventos*/
 function inicializarEventos() {
     document.addEventListener("DOMContentLoaded", () => cargarProductosApi());
+
     document.addEventListener("DOMContentLoaded", () => {
         obtenerDatosLocalStorage("carrito");
         if (datosDesdeLocalStorage) {
@@ -36,7 +37,7 @@ function inicializarEventos() {
             contadorCarrito = carrito.reduce((total, producto) => total + producto.cantidad, 0);
             contadorCarritoElemento.textContent = contadorCarrito;            
         }
-        console.log("Carrito:" + carrito);
+        console.log(carrito);
     });
 
     contenedorProductos.addEventListener("click", evento => { agregarProducto(evento) });
