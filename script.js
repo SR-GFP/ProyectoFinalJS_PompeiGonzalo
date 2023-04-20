@@ -13,6 +13,8 @@ let nombreProducto;
 let precioProducto;
 let descripcionProducto;
 let contadorCarritoElemento;
+let btnCarritoDeCompras;
+let modal;
 
 
 /*Vincular Variables con nodos del DOM*/
@@ -24,6 +26,8 @@ function vincularElementos() {
     precioProducto = document.getElementById("precioProducto");
     descripcionProducto = document.getElementById("descripcionProducto");
     contadorCarritoElemento = document.getElementById("contadorCarrito");
+    btnCarritoDeCompras = document.getElementById("btnCarritoDeCompras")
+    modal = document.getElementById("carritoDeComprasModal");
 }
 
 /*Inicializador de eventos*/
@@ -117,9 +121,15 @@ const obtenerDatosLocalStorage = (clave) => {
     datosDesdeLocalStorage = JSON.parse(datosJSON);
 }
 
+/*Funciones mostrar y ocultar modal de carrito de compras */ 
+const mostarModal = ()=>{
+    btnCarritoDeCompras.addEventListener("click", modal.show)
+}
+
 function main() {
     vincularElementos();
     inicializarEventos();
+    mostarModal();
 }
 
 main()
