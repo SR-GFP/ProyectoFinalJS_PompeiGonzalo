@@ -2,6 +2,7 @@
 let stock = [];
 let carrito = [];
 let contadorCarrito = 0;
+let datosDesdeLocalStorage;
 
 /*Variables para Nodos */
 let contenedorProductos;
@@ -28,8 +29,17 @@ function vincularElementos() {
 /*Inicializador de eventos*/
 function inicializarEventos() {
     document.addEventListener("DOMContentLoaded", () => cargarProductosApi());
-    contenedorProductos.addEventListener("click", evento => { agregarProducto(evento) });
+    document.addEventListener("DOMContentLoaded", () => {
+        obtenerDatosLocalStorage("carrito");
+        if (datosDesdeLocalStorage) {
+            carrito = datosDesdeLocalStorage;
+            contadorCarrito = carrito.reduce((total, producto) => total + producto.cantidad, 0);
+            contadorCarritoElemento.textContent = contadorCarrito;            
+        }
+        console.log("Carrito:" + carrito);
+    });
 
+    contenedorProductos.addEventListener("click", evento => { agregarProducto(evento) });
 }
 
 /*Clase constructora de objetos para agregar Productos al carrito */
@@ -86,13 +96,24 @@ const agregarProducto = evento => {
             carrito.push(productoCarrito);
         }
         sumarCantidadAContador();
+        guardarLocalStorage("carrito", carrito)
         console.log(carrito);
     }
 }
-/*Funcion Incrementa contador */ 
+/*Funcion Incrementa contador */
 const sumarCantidadAContador = () => {
     contadorCarrito += 1;
     contadorCarritoElemento.textContent = contadorCarrito;
+}
+
+/* Funcion para guardar en localStorge*/
+const guardarLocalStorage = (clave, valor) => {
+    localStorage.setItem(clave, JSON.stringify(valor));
+}
+/* Funcion para obtener datos almacenados en localStorge*/
+const obtenerDatosLocalStorage = (clave) => {
+    let datosJSON = localStorage.getItem(clave);
+    datosDesdeLocalStorage = JSON.parse(datosJSON);
 }
 
 function main() {
