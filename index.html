@@ -64,7 +64,8 @@
                 <div class="col-10">
                     <h1>Shop</h1>
                 </div>
-                <div class="col-2">
+                <!-- Contenedor de Carrito y Contador de Productos -->
+                <div class="col-2 contenedorBotonCarrito" >
                     <button type="button" class="btn btn-outline-light p-1 m-1" id="btnCarritoDeCompras">
                         <i class="bi bi-cart icono_carrito"></i>
                         <span class="badge bg-primary rounded-circle" id="contadorCarrito">0</span>
@@ -80,11 +81,31 @@
                         <h5 class="modal-title" id="modalCarritoLabel">Mi carrito de compras</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body" id="contenedorProductosCarrito">
-                        
+                    <div class="modal-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Precio unitario</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="contenedorProductosCarrito">
+                                <!-- Aqui se deben pintar los productos elegidos por el usuario -->
+                                
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong></strong></td>
+                                    <td colspan="2">Sin Productos</td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-danger">Vaciar Carrito</button>
                         <button type="button" class="btn btn-primary">Comprar</button>
                     </div>
                 </div>
@@ -96,9 +117,26 @@
         </div>
     </main>
 
-    <footer>
-
-    </footer>
+    <!-- plantillas HTML a utilizar  -->
+    <template id="plantillaProductosCarrito">
+        <tr>
+            <td id="nombreProductoCarrito">Producto 1</td>
+            <td id="precioProductoCarrito">$10.00</td>
+            <td>
+                <div class="input-group">
+                    <button class="btn btn-outline-secondary" type="button" id="button-minus">-</button>
+                    <input type="text" class="form-control text-center" value="1" id="cantidadProductoCarrito">
+                    <button class="btn btn-outline-secondary" type="button" id="button-plus">+</button>
+                </div>
+            </td>
+            <td id="precioTotalProductoCarrito">$10.00</td>
+            <td>
+                <button type="button" class="btn btn-outline-danger btn-sm" id="btnEliminarProductoCarrito">
+                    <i class="bi bi-trash3"></i>
+                </button>
+            </td>
+        </tr>
+    </template>
 
     <template id="plantillaProductos">
         <div class="col-12 col-md-3 mt-2">
