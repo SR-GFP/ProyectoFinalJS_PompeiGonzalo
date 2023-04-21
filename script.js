@@ -21,6 +21,7 @@ let nombreProductoCarrito;
 let precioProductoCarrito;
 let cantidadProductoCarrito;
 let precioTotalProductoCarrito;
+let totalCompra;
 
 
 /*Vincular Variables con nodos del DOM*/
@@ -39,12 +40,13 @@ function vincularElementos() {
     precioProductoCarrito = document.getElementById("precioProductoCarrito");
     cantidadProductoCarrito = document.getElementById("cantidadProductoCarrito");
     precioTotalProductoCarrito = document.getElementById("precioTotalProductoCarrito");
+    totalCompra = document.getElementById("totalCompra");
 }
 
 /*Inicializador de eventos*/
 function inicializarEventos() {
     document.addEventListener("DOMContentLoaded", () => cargarProductosApi());
-    document.addEventListener("DOMContentLoaded", () => { obtenerDatosLocalStorage("carrito") });
+    document.addEventListener("DOMContentLoaded", () =>  obtenerDatosLocalStorage("carrito"));
     contenedorProductos.addEventListener("click", evento => { agregarProducto(evento) });
     btnCarritoDeCompras.addEventListener("click", evento => mostrarCarrito());
 };
@@ -160,12 +162,31 @@ const obtenerDatosLocalStorage = (clave) => {
     }
 }
 
+/*  funcion de suma de total de compra*/
+const calcularTotal = () => {
+    if (carrito.length > 0) {
+        const precio = carrito.map(objeto => parseFloat(objeto.precio));
+        console.log(precio);
+        const cantidad = carrito.map(objeto => parseFloat(objeto.cantidad));
+        console.log(cantidad);
+        const totalPrecios = precio.reduce((total, precio) => total + precio);
+        console.log(totalPrecios);
+        const totalCantidades = cantidad.reduce((total, cantidad) => total + cantidad);
+        console.log(totalCantidades);
+        const total = totalPrecios * totalCantidades;        
+        totalCompra.innerHTML = total;     
+    } else {
+        totalCompra.innerHTML = "Carrito Sin Productos";        
+    }
+};
+
 
 /*Funciones mostrar modal de carrito de compras */
 function mostrarCarrito() {
     const modalCarrito = new bootstrap.Modal(document.getElementById("modalCarrito"));
     modalCarrito.show();
     pintarProductosCarrito();
+    calcularTotal();
 }
 
 
