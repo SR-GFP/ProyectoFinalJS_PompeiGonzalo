@@ -65,7 +65,7 @@
                     <h1>Shop</h1>
                 </div>
                 <!-- Contenedor de Carrito y Contador de Productos -->
-                <div class="col-2 contenedorBotonCarrito" >
+                <div class="col-2 contenedorBotonCarrito">
                     <button type="button" class="btn btn-outline-light p-1 m-1" id="btnCarritoDeCompras">
                         <i class="bi bi-cart icono_carrito"></i>
                         <span class="badge bg-primary rounded-circle" id="contadorCarrito">0</span>
@@ -94,8 +94,29 @@
                             </thead>
                             <tbody id="contenedorProductosCarrito">
                                 <!-- Aqui se deben pintar los productos elegidos por el usuario -->
-                                
+                                <tr>
+                                    <td id="nombreProductoCarrito">Producto 1</td>
+                                    <td id="precioProductoCarrito">$10.00</td>
+                                    <td>
+                                        <div class="input-group">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                id="button-minus">-</button>
+                                            <input type="text" class="form-control text-center" value="1"
+                                                id="cantidadProductoCarrito">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                id="button-plus">+</button>
+                                        </div>
+                                    </td>
+                                    <td id="precioTotalProductoCarrito">$10.00</td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger btn-sm"
+                                            id="btnEliminarProductoCarrito">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </td>
+                                </tr>
                             </tbody>
+
                             <tfoot>
                                 <tr>
                                     <td colspan="3" class="text-end"><strong></strong></td>
@@ -111,32 +132,17 @@
                 </div>
             </div>
         </div>
-
         <div class="container">
             <div class="row" id="contenedorProductos"></div>
         </div>
     </main>
+    <footer>
+        <div>
 
+        </div>
+    </footer>
     <!-- plantillas HTML a utilizar  -->
-    <template id="plantillaProductosCarrito">
-        <tr>
-            <td id="nombreProductoCarrito">Producto 1</td>
-            <td id="precioProductoCarrito">$10.00</td>
-            <td>
-                <div class="input-group">
-                    <button class="btn btn-outline-secondary" type="button" id="button-minus">-</button>
-                    <input type="text" class="form-control text-center" value="1" id="cantidadProductoCarrito">
-                    <button class="btn btn-outline-secondary" type="button" id="button-plus">+</button>
-                </div>
-            </td>
-            <td id="precioTotalProductoCarrito">$10.00</td>
-            <td>
-                <button type="button" class="btn btn-outline-danger btn-sm" id="btnEliminarProductoCarrito">
-                    <i class="bi bi-trash3"></i>
-                </button>
-            </td>
-        </tr>
-    </template>
+
 
     <template id="plantillaProductos">
         <div class="col-12 col-md-3 mt-2">
@@ -152,8 +158,8 @@
                 </div>
             </div>
         </div>
-
     </template>
+
     <!--Script Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
         integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
@@ -161,8 +167,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
         integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
         crossorigin="anonymous"></script>
-    <!-- Script Propio-->
-    <script src="script.js"></script>
+    <!-- Script -->
+    <script src="./script.js"></script>
 </body>
 
 </html>

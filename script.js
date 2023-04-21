@@ -44,17 +44,17 @@ function vincularElementos() {
 /*Inicializador de eventos*/
 function inicializarEventos() {
     document.addEventListener("DOMContentLoaded", () => cargarProductosApi());
-    document.addEventListener("DOMContentLoaded", () => {obtenerDatosLocalStorage("carrito")});
-    contenedorProductos.addEventListener("click", evento => { agregarProducto(evento)});
-    btnCarritoDeCompras.onclick = mostrarCarrito;
+    document.addEventListener("DOMContentLoaded", () => { obtenerDatosLocalStorage("carrito") });
+    contenedorProductos.addEventListener("click", evento => { agregarProducto(evento) });
+    btnCarritoDeCompras.addEventListener("click", evento => mostrarCarrito());
 };
 
 /*Clase constructora de objetos para agregar Productos al carrito */
 class ProductoCarrito {
-    constructor(id, nombre, precio,) {
+    constructor(id, nombre, precio) {
         this.id = id;
         this.nombre = nombre;
-        this.precio = precio;        
+        this.precio = precio;
         this.cantidad = 1;
     }
 }
@@ -89,24 +89,39 @@ function pintarProductos(array) {
     contenedorProductos.appendChild(fragment);
 }
 
-/* funcion para recorrer array Carrito y pintar productos en Template HTML de CARRITO DE COMPRAS*/
+/* funcion para recorrer array Carrito y pintar productos con Template String*/
 function pintarProductosCarrito() {
+    contenedorProductosCarrito.innerHTML = "";
     const fragment = document.createDocumentFragment();
-    console.log(carrito);
-
-    carrito.forEach((producto) =>{
-        const copiaPlantilla = plantillaProductosCarrito.cloneNode(true);
-        const {id, nombre, precio, cantidad} = producto;
-        copiaPlantilla.querySelector("#idProductoCarrito").textContent = id;
-        copiaPlantilla.querySelector("#nombreProductoCarrito").textContent = nombre;
-        copiaPlantilla.querySelector("#precioProductoCarrito").textContent = precio;
-        copiaPlantilla.querySelector("#cantidadProductoCarrito").value = cantidad;
-        copiaPlantilla.querySelector("#precioTotalProductoCarrito").textContent =precio*cantidad;
-        
-        fragment.appendChild(copiaPlantilla)
+    carrito.forEach((producto) => {
+        console.log(carrito);
+        let fila = document.createElement("tr");
+        fila.id = `fila-${producto.id}`;
+        fila.innerHTML = `
+        <td id="nombreProductoCarrito">${producto.nombre}</td>
+        <td id="precioProductoCarrito">${producto.precio}</td>
+        <td>
+            <div class="input-group">
+                <button class="btn btn-outline-secondary" type="button"
+                    id="button-minus">-</button>
+                <input type="text" class="form-control text-center" value="${producto.cantidad}"
+                    id="cantidadProductoCarrito">
+                <button class="btn btn-outline-secondary" type="button"
+                    id="button-plus">+</button>
+            </div>
+        </td>
+        <td id="precioTotalProductoCarrito">${producto.cantidad * producto.precio}</td>
+        <td>
+            <button type="button" class="btn btn-outline-danger btn-sm"
+                id="btnEliminarProductoCarrito">
+                <i class="bi bi-trash3"></i>
+            </button>
+        </td>`;
+        fragment.appendChild(fila);
     });
-    contenedorProductosCarrito.appendChild(fragment);
+    contenedorProductosCarrito.append(fragment);
 }
+
 
 /*Funcion para cargar objeto al array Carrito al dar en boton comprar*/
 const agregarProducto = evento => {
@@ -121,7 +136,7 @@ const agregarProducto = evento => {
             carrito.push(productoCarrito);
         }
         sumarCantidadAContador();
-        guardarLocalStorage("carrito", carrito);        
+        guardarLocalStorage("carrito", carrito);
     }
 }
 /*Funcion Incrementa contador */
@@ -142,14 +157,14 @@ const obtenerDatosLocalStorage = (clave) => {
         carrito = datosDesdeLocalStorage;
         contadorCarrito = carrito.reduce((total, producto) => total + producto.cantidad, 0);
         contadorCarritoElemento.textContent = contadorCarrito;
-    }    
+    }
 }
 
 
 /*Funciones mostrar modal de carrito de compras */
-function mostrarCarrito(){
+function mostrarCarrito() {
     const modalCarrito = new bootstrap.Modal(document.getElementById("modalCarrito"));
-    modalCarrito.show();    
+    modalCarrito.show();
     pintarProductosCarrito();
 }
 
