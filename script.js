@@ -26,26 +26,17 @@ function vincularElementos() {
     precioProducto = document.getElementById("precioProducto");
     descripcionProducto = document.getElementById("descripcionProducto");
     contadorCarritoElemento = document.getElementById("contadorCarrito");
-    btnCarritoDeCompras = document.getElementById("btnCarritoDeCompras")
-    modal = document.getElementById("carritoDeComprasModal");
+    btnCarritoDeCompras = document.getElementById("btnCarritoDeCompras");
 }
 
 /*Inicializador de eventos*/
 function inicializarEventos() {
     document.addEventListener("DOMContentLoaded", () => cargarProductosApi());
 
-    document.addEventListener("DOMContentLoaded", () => {
-        obtenerDatosLocalStorage("carrito");
-        if (datosDesdeLocalStorage) {
-            carrito = datosDesdeLocalStorage;
-            contadorCarrito = carrito.reduce((total, producto) => total + producto.cantidad, 0);
-            contadorCarritoElemento.textContent = contadorCarrito;            
-        }
-        console.log(carrito);
-    });
-
-    contenedorProductos.addEventListener("click", evento => { agregarProducto(evento) });
-}
+    document.addEventListener("DOMContentLoaded", () => {obtenerDatosLocalStorage("carrito")});
+    contenedorProductos.addEventListener("click", evento => { agregarProducto(evento)});
+    btnCarritoDeCompras.addEventListener("click", () => {mostrarCarrito()});
+};
 
 /*Clase constructora de objetos para agregar Productos al carrito */
 class ProductoCarrito {
@@ -119,17 +110,26 @@ const guardarLocalStorage = (clave, valor) => {
 const obtenerDatosLocalStorage = (clave) => {
     let datosJSON = localStorage.getItem(clave);
     datosDesdeLocalStorage = JSON.parse(datosJSON);
+    if (datosDesdeLocalStorage) {
+        carrito = datosDesdeLocalStorage;
+        contadorCarrito = carrito.reduce((total, producto) => total + producto.cantidad, 0);
+        contadorCarritoElemento.textContent = contadorCarrito;
+    }
+    console.log(carrito);
 }
 
-/*Funciones mostrar y ocultar modal de carrito de compras */ 
-const mostarModal = ()=>{
-    btnCarritoDeCompras.addEventListener("click", modal.show)
+
+/*Funciones mostrar modal de carrito de compras */
+function mostrarCarrito(){
+    const modalCarrito = new bootstrap.Modal(document.getElementById("modalCarrito"));
+    modalCarrito.show();
 }
+
+
 
 function main() {
     vincularElementos();
     inicializarEventos();
-    mostarModal();
 }
 
 main()
