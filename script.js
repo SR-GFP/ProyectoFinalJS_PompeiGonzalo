@@ -46,9 +46,10 @@ function vincularElementos() {
 /*Inicializador de eventos*/
 function inicializarEventos() {
     document.addEventListener("DOMContentLoaded", () => cargarProductosApi());
-    document.addEventListener("DOMContentLoaded", () =>  obtenerDatosLocalStorage("carrito"));
+    document.addEventListener("DOMContentLoaded", () => obtenerDatosLocalStorage("carrito"));
     contenedorProductos.addEventListener("click", evento => { agregarProducto(evento) });
     btnCarritoDeCompras.addEventListener("click", evento => mostrarCarrito());
+    contenedorProductosCarrito.addEventListener("click", evento => sumarORestarCantidad(evento))
 };
 
 /*Clase constructora de objetos para agregar Productos al carrito */
@@ -73,7 +74,7 @@ function cargarProductosApi() {
 
 /*Funcion para recorrer array y renderizar los productos- se utiliza un TEMPLATE HTML con Fragment
 para que el tiempo de carga sea menor y se desestrutura el objeto*/
-function pintarProductos(array) {
+function pintarProductos(array) {    
     const fragment = document.createDocumentFragment();
 
     array.forEach((producto) => {
@@ -96,20 +97,18 @@ function pintarProductosCarrito() {
     contenedorProductosCarrito.innerHTML = "";
     const fragment = document.createDocumentFragment();
     carrito.forEach((producto) => {
-        console.log(carrito);
         let fila = document.createElement("tr");
-        fila.id = `fila-${producto.id}`;
         fila.innerHTML = `
         <td id="nombreProductoCarrito">${producto.nombre}</td>
         <td id="precioProductoCarrito">${producto.precio}</td>
         <td>
-            <div class="input-group">
+            <div class="input-group" >
                 <button class="btn btn-outline-secondary" type="button"
-                    id="button-minus">-</button>
+                    id="button-minus" data-id="${producto.id}">-</button>
                 <input type="text" class="form-control text-center" value="${producto.cantidad}"
                     id="cantidadProductoCarrito">
                 <button class="btn btn-outline-secondary" type="button"
-                    id="button-plus">+</button>
+                    id="button-plus" data-id="${producto.id}">+</button>
             </div>
         </td>
         <td id="precioTotalProductoCarrito">${producto.cantidad * producto.precio}</td>
@@ -122,8 +121,43 @@ function pintarProductosCarrito() {
         fragment.appendChild(fila);
     });
     contenedorProductosCarrito.append(fragment);
+    sumarCantidadAContador();
 }
 
+/*Funcio para disminuir o aumentar cantidad desde carrito de compra */
+const sumarORestarCantidad = evento => {
+    console.log(carrito);
+    const productoID = evento.target.getAttribute("data-id");
+    if (evento.target.id === "button-minus") {
+        carrito.forEach(producto => {
+            if (producto.id === productoID && producto.cantidad !== 1) {
+                producto.cantidad -= 1
+            } else if (producto.id === productoID) {
+                eliminarPoductoCarrito(evento)
+            }
+        })
+    }
+    if (evento.target.id === "button-plus") {
+        carrito.forEach(producto => {
+            if (producto.id === productoID) {
+                producto.cantidad += 1
+            }        
+        })
+    }
+    pintarProductosCarrito();
+    guardarLocalStorage("carrito", carrito);
+    calcularTotal();
+}
+
+/*Eliminar podructo de carrito*/ 
+const eliminarPoductoCarrito = evento =>{
+    const productoID = evento.target.getAttribute("data-id");
+    const productoAEliminar = carrito.findIndex(producto => producto.id === productoID)    
+    console.log(carrito);
+    console.log(productoAEliminar);
+    carrito.splice(productoAEliminar,1)
+    console.log(carrito);
+}
 
 /*Funcion para cargar objeto al array Carrito al dar en boton comprar*/
 const agregarProducto = evento => {
@@ -139,12 +173,20 @@ const agregarProducto = evento => {
         }
         sumarCantidadAContador();
         guardarLocalStorage("carrito", carrito);
+        console.log(carrito);
     }
 }
 /*Funcion Incrementa contador */
 const sumarCantidadAContador = () => {
-    contadorCarrito += 1;
-    contadorCarritoElemento.textContent = contadorCarrito;
+    if(carrito.length == 0){
+        contadorCarrito = 0;
+    }else{
+        contadorCarrito = 0;
+        carrito.forEach ((producto) => {
+            contadorCarrito += producto.cantidad;
+        });   
+    }    
+    contadorCarritoElemento.textContent = contadorCarrito;        
 }
 
 /* Funcion para guardar en localStorge*/
@@ -166,17 +208,13 @@ const obtenerDatosLocalStorage = (clave) => {
 const calcularTotal = () => {
     if (carrito.length > 0) {
         const precio = carrito.map(objeto => parseFloat(objeto.precio));
-        console.log(precio);
         const cantidad = carrito.map(objeto => parseFloat(objeto.cantidad));
-        console.log(cantidad);
         const totalPrecios = precio.reduce((total, precio) => total + precio);
-        console.log(totalPrecios);
         const totalCantidades = cantidad.reduce((total, cantidad) => total + cantidad);
-        console.log(totalCantidades);
-        const total = totalPrecios * totalCantidades;        
-        totalCompra.innerHTML = total;     
+        const total = totalPrecios * totalCantidades;
+        totalCompra.innerHTML = total;
     } else {
-        totalCompra.innerHTML = "Carrito Sin Productos";        
+        totalCompra.innerHTML = "Carrito Sin Productos";
     }
 };
 
@@ -184,7 +222,7 @@ const calcularTotal = () => {
 /*Funciones mostrar modal de carrito de compras */
 function mostrarCarrito() {
     const modalCarrito = new bootstrap.Modal(document.getElementById("modalCarrito"));
-    modalCarrito.show();
+    modalCarrito.show();    
     pintarProductosCarrito();
     calcularTotal();
 }
