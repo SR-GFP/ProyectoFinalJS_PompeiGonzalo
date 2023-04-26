@@ -22,6 +22,8 @@ let precioProductoCarrito;
 let cantidadProductoCarrito;
 let precioTotalProductoCarrito;
 let totalCompra;
+let vaciarCarrito;
+let btnEliminarProductoCarrito;
 
 
 /*Vincular Variables con nodos del DOM*/
@@ -41,6 +43,8 @@ function vincularElementos() {
     cantidadProductoCarrito = document.getElementById("cantidadProductoCarrito");
     precioTotalProductoCarrito = document.getElementById("precioTotalProductoCarrito");
     totalCompra = document.getElementById("totalCompra");
+    vaciarCarrito = document.getElementById("vaciarCarrito");
+    btnEliminarProductoCarrito = document.getElementById("btnEliminarProductoCarrito");
 }
 
 /*Inicializador de eventos*/
@@ -49,7 +53,9 @@ function inicializarEventos() {
     document.addEventListener("DOMContentLoaded", () => obtenerDatosLocalStorage("carrito"));
     contenedorProductos.addEventListener("click", evento => { agregarProducto(evento) });
     btnCarritoDeCompras.addEventListener("click", evento => mostrarCarrito());
-    contenedorProductosCarrito.addEventListener("click", evento => sumarORestarCantidad(evento))
+    contenedorProductosCarrito.addEventListener("click", evento => sumarORestarCantidad(evento));
+    vaciarCarrito.addEventListener("click", evento => vaciarCarritoCompleto(evento));
+    btnEliminarProductoCarrito.addEventListener("click", eliminarTotalPorProducto());
 };
 
 /*Clase constructora de objetos para agregar Productos al carrito */
@@ -72,7 +78,7 @@ function cargarProductosApi() {
         })
 }
 
-/*Funcion para recorrer array y renderizar los productos- se utiliza un TEMPLATE HTML con Fragment
+/*Funcion para recorrer array y renderizar los productos en la pantalla principal- se utiliza un TEMPLATE HTML con Fragment
 para que el tiempo de carga sea menor y se desestrutura el objeto*/
 function pintarProductos(array) {    
     const fragment = document.createDocumentFragment();
@@ -114,7 +120,7 @@ function pintarProductosCarrito() {
         <td id="precioTotalProductoCarrito">${producto.cantidad * producto.precio}</td>
         <td>
             <button type="button" class="btn btn-outline-danger btn-sm"
-                id="btnEliminarProductoCarrito">
+                id="btnEliminarProductoCarrito" data-id="${producto.id}">
                 <i class="bi bi-trash3"></i>
             </button>
         </td>`;
@@ -144,20 +150,35 @@ const sumarORestarCantidad = evento => {
             }        
         })
     }
+    
     pintarProductosCarrito();
     guardarLocalStorage("carrito", carrito);
     calcularTotal();
 }
 
-/*Eliminar podructo de carrito*/ 
+/*Eliminar podructo*/ 
 const eliminarPoductoCarrito = evento =>{
     const productoID = evento.target.getAttribute("data-id");
+    console.log(evento.target.getAttribute("data-id"));
     const productoAEliminar = carrito.findIndex(producto => producto.id === productoID)    
     console.log(carrito);
     console.log(productoAEliminar);
     carrito.splice(productoAEliminar,1)
+    console.log(carrito);    
+}
+
+const eliminarTotalPorProducto = () => {
+    
+}
+/*Funcion para vaciar carrito completo */ 
+const vaciarCarritoCompleto =  (evento) => {
+    carrito.splice(0, carrito.length);
+    localStorage.clear()
+    pintarProductosCarrito();
+    calcularTotal()
     console.log(carrito);
 }
+
 
 /*Funcion para cargar objeto al array Carrito al dar en boton comprar*/
 const agregarProducto = evento => {
@@ -176,6 +197,8 @@ const agregarProducto = evento => {
         console.log(carrito);
     }
 }
+
+
 /*Funcion Incrementa contador */
 const sumarCantidadAContador = () => {
     if(carrito.length == 0){
