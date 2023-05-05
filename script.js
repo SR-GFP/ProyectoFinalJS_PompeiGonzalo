@@ -66,6 +66,7 @@ class ProductoCarrito {
     }
 }
 
+/* ****funciones y procesos referenstes a la pagina de presentacion "SHOP" **************/
 /*Obtener los datos de los productos desde API MOCKAPI*/
 function cargarProductosApi() {
     fetch("https://643e078b6c30feced81e5b74.mockapi.io/productos")
@@ -95,92 +96,6 @@ function pintarProductos(array) {
     });
     contenedorProductos.appendChild(fragment);
 }
-
-/* funcion para recorrer array Carrito y pintar productos con Template String*/
-function pintarProductosCarrito() {
-    contenedorProductosCarrito.innerHTML = "";
-    const fragment = document.createDocumentFragment();
-    carrito.forEach((producto) => {
-        let fila = document.createElement("tr");
-        fila.innerHTML = `
-        <td id="nombreProductoCarrito">${producto.nombre}</td>
-        <td id="precioProductoCarrito">${producto.precio}</td>
-        <td>
-            <div class="input-group" >
-                <button class="btn btn-outline-secondary" type="button"
-                    id="button-minus" data-id="${producto.id}">-</button>
-                <input type="text" class="form-control text-center" value="${producto.cantidad}"
-                    id="cantidadProductoCarrito">
-                <button class="btn btn-outline-secondary" type="button"
-                    id="button-plus" data-id="${producto.id}">+</button>
-            </div>
-        </td>
-        <td id="precioTotalProductoCarrito">${producto.cantidad * producto.precio}</td>
-        <td>
-            <button type="button" class="btn btn-outline-danger btn-sm"
-                id="btnEliminarProductoCarrito" data-id="${producto.id}">
-                <i class="bi bi-trash3"></i>
-            </button>
-        </td>`;
-        fragment.appendChild(fila);
-    });
-    contenedorProductosCarrito.append(fragment);
-    sumarCantidadAContador();
-}
-
-/*Funcio para disminuir o aumentar cantidad desde carrito de compra */
-const sumarORestarCantidad = evento => {
-    console.log(carrito);
-    const productoID = evento.target.getAttribute("data-id");
-    if (evento.target.id === "button-minus") {
-        carrito.forEach(producto => {
-            if (producto.id === productoID && producto.cantidad !== 1) {
-                producto.cantidad -= 1
-            } else if (producto.id === productoID) {
-                eliminarPoductoCarrito(evento)
-            }
-        })
-    }
-    if (evento.target.id === "button-plus") {
-        carrito.forEach(producto => {
-            if (producto.id === productoID) {
-                producto.cantidad += 1
-            }        
-        })
-    }
-    if(evento.target.id === "btnEliminarProductoCarrito"){
-        carrito.forEach(producto => {
-            if (producto.id === productoID){
-                eliminarPoductoCarrito(evento);
-            }
-        })
-    }
-    
-    pintarProductosCarrito();
-    guardarLocalStorage("carrito", carrito);
-    calcularTotal();
-}
-
-/*Eliminar podructo*/ 
-const eliminarPoductoCarrito = evento =>{
-    const productoID = evento.target.getAttribute("data-id");
-    console.log(evento.target.getAttribute("data-id"));
-    const productoAEliminar = carrito.findIndex(producto => producto.id === productoID)    
-    console.log(carrito);
-    console.log(productoAEliminar);
-    carrito.splice(productoAEliminar,1)
-    console.log(carrito);    
-}
-
-/*Funcion para vaciar carrito completo */ 
-const vaciarCarritoCompleto =  (evento) => {
-    carrito.splice(0, carrito.length);
-    localStorage.clear()
-    pintarProductosCarrito();
-    calcularTotal()
-    console.log(carrito);
-}
-
 
 /*Funcion para cargar objeto al array Carrito al dar en boton comprar*/
 const agregarProducto = evento => {
@@ -214,6 +129,7 @@ const sumarCantidadAContador = () => {
     contadorCarritoElemento.textContent = contadorCarrito;        
 }
 
+/* *****funciones para manejo de datos de "LS"*/
 /* Funcion para guardar en localStorge*/
 const guardarLocalStorage = (clave, valor) => {
     localStorage.setItem(clave, JSON.stringify(valor));
@@ -229,6 +145,86 @@ const obtenerDatosLocalStorage = (clave) => {
     }
 }
 
+
+/*Funciones mostrar modal de carrito de compras */
+function mostrarCarrito() {
+    const modalCarrito = new bootstrap.Modal(document.getElementById("modalCarrito"));
+    modalCarrito.show();    
+    pintarProductosCarrito();
+    calcularTotal();
+}
+
+/* ****funciones y procesos referenstes al "CARRITO DE COMPRAS DEL USUARIO" **************/
+
+
+/* funcion para recorrer array Carrito y pintar productos con Template String
+    se pintan los diferentes productos selecionados en el carrito de compras*/
+    function pintarProductosCarrito() {
+        contenedorProductosCarrito.innerHTML = "";
+        const fragment = document.createDocumentFragment();
+        carrito.forEach((producto) => {
+            let fila = document.createElement("tr");
+            fila.innerHTML = `
+            <td id="nombreProductoCarrito">${producto.nombre}</td>
+            <td id="precioProductoCarrito">${producto.precio}</td>
+            <td>
+                <div class="input-group" >
+                    <button class="btn btn-outline-secondary" type="button"
+                        id="button-minus" data-id="${producto.id}">-</button>
+                    <input type="text" class="form-control text-center" value="${producto.cantidad}"
+                        id="cantidadProductoCarrito">
+                    <button class="btn btn-outline-secondary" type="button"
+                        id="button-plus" data-id="${producto.id}">+</button>
+                </div>
+            </td>
+            <td id="precioTotalProductoCarrito">${producto.cantidad * producto.precio}</td>
+            <td>
+                <button type="button" class="btn btn-outline-danger btn-sm btnEliminar" data-id="${producto.id}">
+                    <i class="bi bi-trash3 btnEliminar" data-id="${producto.id}"></i>
+                </button>            
+            </td>`;
+            fragment.appendChild(fila);
+        });
+        contenedorProductosCarrito.append(fragment);
+        sumarCantidadAContador();
+    }
+    
+    /*Funcion para disminuir o aumentar cantidad desde carrito de compra y eliminar el total del producto
+        se usa la delegacion de eventos en el contendor de descripcion del carrito. 
+        Se detecta el evento click en el contenedor y dependiendo de las diferentes propiedades
+        se ejecutan diferentes funciones*/
+    const sumarORestarCantidad = evento => {    
+        const productoID = evento.target.getAttribute("data-id");
+        if (evento.target.id === "button-minus") {
+            carrito.forEach(producto => {
+                if (producto.id === productoID && producto.cantidad !== 1) {
+                    producto.cantidad -= 1
+                } else if (producto.id === productoID) {
+                    eliminarPoductoCarrito(evento)
+                }
+            })
+        }
+        if (evento.target.id === "button-plus") {
+            carrito.forEach(producto => {
+                if (producto.id === productoID) {
+                    producto.cantidad += 1
+                }        
+            })
+        }
+        if(evento.target.classList.contains ("btnEliminar")){
+            console.log(carrito);
+            carrito.forEach(producto => {
+                if (producto.id === productoID){
+                    eliminarPoductoCarrito(evento);
+                }
+            })
+        }
+        
+        pintarProductosCarrito();
+        guardarLocalStorage("carrito", carrito);
+        calcularTotal();
+    }
+    
 /*  funcion de suma de total de compra para el carrito*/
 const calcularTotal = () => {    
     if(carrito.length > 0 ){
@@ -239,18 +235,23 @@ const calcularTotal = () => {
         totalCompra.innerHTML = "Carrito Sin Productos";
     }
 };
-
-
-
-/*Funciones mostrar modal de carrito de compras */
-function mostrarCarrito() {
-    const modalCarrito = new bootstrap.Modal(document.getElementById("modalCarrito"));
-    modalCarrito.show();    
-    pintarProductosCarrito();
-    calcularTotal();
-}
-
-
+    /*Eliminar podructo*/ 
+    const eliminarPoductoCarrito = evento =>{
+        const productoID = evento.target.getAttribute("data-id");
+        console.log(evento.target.getAttribute("data-id"));
+        const productoAEliminar = carrito.findIndex(producto => producto.id === productoID);        
+        carrito.splice(productoAEliminar,1);
+    }
+    
+    /*Funcion para vaciar carrito completo*/ 
+    const vaciarCarritoCompleto =  (evento) => {
+        carrito.splice(0, carrito.length);
+        localStorage.clear()
+        pintarProductosCarrito();
+        calcularTotal()
+        console.log(carrito);
+    }
+    
 
 function main() {
     vincularElementos();
