@@ -23,7 +23,7 @@ let cantidadProductoCarrito;
 let precioTotalProductoCarrito;
 let totalCompra;
 let vaciarCarrito;
-let btnEliminarProductoCarrito;
+
 
 
 /*Vincular Variables con nodos del DOM*/
@@ -43,8 +43,7 @@ function vincularElementos() {
     cantidadProductoCarrito = document.getElementById("cantidadProductoCarrito");
     precioTotalProductoCarrito = document.getElementById("precioTotalProductoCarrito");
     totalCompra = document.getElementById("totalCompra");
-    vaciarCarrito = document.getElementById("vaciarCarrito");
-    btnEliminarProductoCarrito = document.getElementById("btnEliminarProductoCarrito");
+    vaciarCarrito = document.getElementById("vaciarCarrito");    
 }
 
 /*Inicializador de eventos*/
@@ -54,8 +53,7 @@ function inicializarEventos() {
     contenedorProductos.addEventListener("click", evento => { agregarProducto(evento) });
     btnCarritoDeCompras.addEventListener("click", evento => mostrarCarrito());
     contenedorProductosCarrito.addEventListener("click", evento => sumarORestarCantidad(evento));
-    vaciarCarrito.addEventListener("click", evento => vaciarCarritoCompleto(evento));
-    btnEliminarProductoCarrito.addEventListener("click", eliminarTotalPorProducto());
+    vaciarCarrito.addEventListener("click", evento => vaciarCarritoCompleto(evento));    
 };
 
 /*Clase constructora de objetos para agregar Productos al carrito */
@@ -150,6 +148,13 @@ const sumarORestarCantidad = evento => {
             }        
         })
     }
+    if(evento.target.id === "btnEliminarProductoCarrito"){
+        carrito.forEach(producto => {
+            if (producto.id === productoID){
+                eliminarPoductoCarrito(evento);
+            }
+        })
+    }
     
     pintarProductosCarrito();
     guardarLocalStorage("carrito", carrito);
@@ -167,9 +172,6 @@ const eliminarPoductoCarrito = evento =>{
     console.log(carrito);    
 }
 
-const eliminarTotalPorProducto = () => {
-    
-}
 /*Funcion para vaciar carrito completo */ 
 const vaciarCarritoCompleto =  (evento) => {
     carrito.splice(0, carrito.length);
@@ -227,19 +229,17 @@ const obtenerDatosLocalStorage = (clave) => {
     }
 }
 
-/*  funcion de suma de total de compra*/
-const calcularTotal = () => {
-    if (carrito.length > 0) {
-        const precio = carrito.map(objeto => parseFloat(objeto.precio));
-        const cantidad = carrito.map(objeto => parseFloat(objeto.cantidad));
-        const totalPrecios = precio.reduce((total, precio) => total + precio);
-        const totalCantidades = cantidad.reduce((total, cantidad) => total + cantidad);
-        const total = totalPrecios * totalCantidades;
-        totalCompra.innerHTML = total;
-    } else {
+/*  funcion de suma de total de compra para el carrito*/
+const calcularTotal = () => {    
+    if(carrito.length > 0 ){
+        const preciosTotales = carrito.map(producto => producto.precio * producto.cantidad);
+        const precioTotalCompra = preciosTotales.reduce((total, precio)=> total + precio, 0);        
+        totalCompra.innerHTML = precioTotalCompra;
+    }else {
         totalCompra.innerHTML = "Carrito Sin Productos";
     }
 };
+
 
 
 /*Funciones mostrar modal de carrito de compras */
